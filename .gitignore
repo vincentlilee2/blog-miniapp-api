@@ -1,0 +1,4 @@
+node_modules/
+miniapp-data/
+.DS_Store
+*.log

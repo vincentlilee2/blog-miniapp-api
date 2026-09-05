@@ -1,0 +1,20 @@
+{
+  "name": "blog-miniapp-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "MemoryGarden Blog 微信小程序 API（微信云托管 CloudRun / Express）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "export": "node scripts/export-miniapp.mjs"
+  },
+  "dependencies": {
+    "express": "^4.22.2",
+    "gray-matter": "^4.0.3",
+    "marked": "^15.0.0"
+  },
+  "devDependencies": {
+    "cos-nodejs-sdk-v5": "^3.0.0"
+  }
+}
