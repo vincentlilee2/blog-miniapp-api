@@ -1,12 +1,12 @@
 # Blog 小程序 API — 部署指南（微信云托管 CloudRun）
 
 架构：**小程序 → 云托管(本目录 Express API) → 博客服务器数据包**
-内容数据源：本地 `Blog/src/content/blog/*.md` → `scripts/export-miniapp.mjs` 生成数据包 →
-`~/MyCenter/miniapp-sync.sh`(由 watch-blog.sh 自动调用) 推送到博客服务器 → API 启动/每 10 分钟拉取并缓存。
+内容数据源：本地 `Blog/src/content/blog/*.md`（`~/MyCenter/Blog`，经 `BLOG_DIR` 显式指向）→ `scripts/export-miniapp.mjs` 生成数据包 →
+`scripts/miniapp-sync.sh`(由 watch-blog.sh 自动调用) 推送到博客服务器 → API 启动/每 10 分钟拉取并缓存。
 发新文章免重新部署：保存即发布管线自动完成。
 
-> 原 COS 方案（`scripts/push-cos.mjs` + `~/MyCenter/miniapp-push.sh` + `~/.miniapp-cos.env`）保留备用，
-> 若日后想数据包独立于博客服务器，配置凭据后改回调用即可。
+> 原 COS 方案（`scripts/push-cos.mjs` + `~/.miniapp-cos.env`）保留备用，
+> 若日后想数据包独立于博客服务器，配置凭据后改走 push-cos 即可。
 
 ## 1. 创建微信云托管环境与服务
 
@@ -28,8 +28,8 @@
 
 ## 3. 数据包发布通道（博客服务器）
 
-数据包由 `~/MyCenter/miniapp-sync.sh` 推送到博客服务器（`watch-blog.sh` 构建后自动调用，
-也可手动 `bash ~/MyCenter/miniapp-sync.sh`）。线上地址固定为：
+数据包由 `本仓 scripts/miniapp-sync.sh` 推送到博客服务器（`watch-blog.sh` 构建后自动调用，
+也可手动 `bash 本仓 scripts/miniapp-sync.sh`）。线上地址固定为：
 `https://blog.mgarden.org.cn/vincent/miniapp-data.json`
 
 前置：`~/MyCenter/deploy-config.json` 有 server/remote_dir/domain，免密 SSH 正常

@@ -1,7 +1,8 @@
-// 生成小程序 API 数据包 miniapp-data/data.json（发布管线用，本地运行）
-// 用法: node scripts/export-miniapp.mjs
-// 产出: { posts:[摘要], details:{slug:{meta,contentHtml}}, tags:[], archive:[], site:{} }
-// 注意: site-config.json 与文章均为私人内容 → miniapp-data/ 已 gitignore, 绝不进开源仓
+// 生成小程序 API 数据包 data/data.json（发布管线用，本地运行）
+// 用法: BLOG_DIR=<Blog仓根> node scripts/export-miniapp.mjs
+// 内容源 = Blog 仓(~/MyCenter/Blog)的 src/content/blog + site-config.json(刻意单一内容源)
+// 产出: data/data.json = { posts:[摘要], details:{slug:{...}}, tags:[], archive:[], site:{} }
+// 注意: site-config.json 与文章均为私人内容 → data/ 已 gitignore, 绝不进开源仓
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,10 +11,17 @@ import { fileURLToPath } from 'node:url';
 import { mdToHtml, htmlToText } from '../lib/markdown.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const BLOG_DIR = process.env.BLOG_DIR || path.resolve(__dirname, '..', '..');
+
+// ── 内容源 Blog 仓(必填显式; 本仓已独立于 Blog, 不再有相对默认) ──
+const BLOG_DIR = process.env.BLOG_DIR;
+if (!BLOG_DIR || !fs.existsSync(path.join(BLOG_DIR, 'src', 'content', 'blog'))) {
+  console.error('缺少 BLOG_DIR: 须指向 Blog 内容源仓(如 ~/MyCenter/Blog)');
+  process.exit(1);
+}
 const CONTENT_DIR = path.join(BLOG_DIR, 'src', 'content', 'blog');
 const SITE_PATH = path.join(BLOG_DIR, 'site-config.json');
-const OUT_DIR = path.join(BLOG_DIR, 'miniapp-data');
+// ── 数据包输出到本仓 data/ (与内容源解耦) ──
+const OUT_DIR = path.join(__dirname, '..', 'data');
 const MEDIA_ORIGIN = (process.env.MINIAPP_MEDIA_ORIGIN || 'https://blog.mgarden.org.cn').replace(/\/+$/, '');
 
 function fmtDate(d) {

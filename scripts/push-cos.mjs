@@ -1,18 +1,16 @@
-// 上传小程序数据包到腾讯云 COS（发布管线第二步）
+// 上传小程序数据包到腾讯云 COS（备用发布通道；默认路径走本仓 data/）
 // 用法:
 //   COS_SECRET_ID=xxx COS_SECRET_KEY=xxx COS_BUCKET=blog-miniapp-125xxxx \
 //   COS_REGION=ap-shanghai node scripts/push-cos.mjs [data.json 路径]
-// 默认上传 miniapp-data/data.json → <bucket>/miniapp/data.json (public-read)
-// 依赖 @tencentcloud/cos-nodejs-sdk-v5（仅本机发布用，不入云托管镜像）
-// 也可用 coscmd（腾讯云官方 CLI）替代: coscmd upload miniapp-data/data.json /miniapp/data.json
+// 依赖 cos-nodejs-sdk-v5（devDependency，仅本机发布用，不入云托管镜像）
+// 也可用 coscmd（腾讯云官方 CLI）替代: coscmd upload data/data.json /miniapp/data.json
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const BLOG_DIR = process.env.BLOG_DIR || path.resolve(__dirname, '..', '..');
-const file = process.argv[2] || path.join(BLOG_DIR, 'miniapp-data', 'data.json');
+const file = process.argv[2] || path.join(__dirname, '..', 'data', 'data.json');
 
 if (!fs.existsSync(file)) {
   console.error(`数据包不存在: ${file}（先跑 export-miniapp.mjs）`);

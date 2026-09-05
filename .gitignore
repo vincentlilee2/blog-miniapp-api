@@ -1,4 +1,4 @@
 node_modules/
-miniapp-data/
+data/
 .DS_Store
 *.log
