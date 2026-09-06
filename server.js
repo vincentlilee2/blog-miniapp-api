@@ -14,15 +14,6 @@ const PORT = Number(process.env.PORT || process.env.MINIAPP_PORT || 3004);
 
 app.use(express.json({ limit: '2mb' }));
 
-// ─── CORS: web 名片页(blog.mgarden.org.cn)表单跨域调留言接口 ───
-app.use((req, res, next) => {
-  res.set('Access-Control-Allow-Origin', '*');
-  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') return res.sendStatus(204);
-  next();
-});
-
 // ─── 访客留言 SMTP 配置(环境变量注入, 密钥不进仓) ───
 const SMTP_USER = process.env.SMTP_USER || '';
 const SMTP_PASS = process.env.SMTP_PASS || '';
