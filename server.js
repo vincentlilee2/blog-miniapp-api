@@ -8,6 +8,7 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import crypto from 'node:crypto';
 import { listPosts, getPost, getSite, getTags, getArchive } from './lib/store.js';
+import userApi from './lib/userapi.js';
 
 const app = express();
 const PORT = Number(process.env.PORT || process.env.MINIAPP_PORT || 3004);
@@ -156,9 +157,13 @@ app.post('/api/guestbook', async (req, res) => {
   }
 });
 
+// 用户体系: 微信登录/会话/个人名片/头像(见 lib/userapi.js, lib/db.js)
+app.use(userApi);
+
 // 404 → 带状态码的错误要落成 404 而非 500
 app.use((err, req, res, next) => {
   if (err.status === 404) return res.status(404).json({ ok: false, error: err.message });
+  if (err.type === 'entity.parse.failed') return res.status(400).json({ ok: false, error: '请求体不是合法 JSON' });
   return res.status(500).json({ ok: false, error: err.message });
 });
 

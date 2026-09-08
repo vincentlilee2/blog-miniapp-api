@@ -10,6 +10,7 @@
     "export": "node scripts/export-miniapp.mjs"
   },
   "dependencies": {
+    "better-sqlite3": "^13.0.3",
     "express": "^4.22.2",
     "gray-matter": "^4.0.3",
     "marked": "^15.0.0",
