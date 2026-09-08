@@ -63,3 +63,10 @@ curl https://<云托管域名>/api/posts/hello-world   # 详情含 contentHtml
 - **图片裂**：downloadFile 合法域名漏配 / 图片是 http 明文
 - **部署后 /api 404**：确认部署的是 miniapp/ 目录（server.js 在根），且服务端口 80
 - **npm ci 失败**：Dockerfile 已设 npmmirror 源；若仍失败在服务配置里加环境变量 `NPM_CONFIG_REGISTRY=https://registry.npmmirror.com`
+
+## M2: 多用户体系(2026-09-08)
+- 新增用户/名片/会话(表 users/cards/sessions) → SQLite 库在 `data/app.db`(gitignored; WAL)。**生产数据目录 `/opt/blog-miniapp-api/data/`，pm2 重启不丢；建议每日 crontab 备份该目录**
+- 新路由: `POST /api/auth/login`(jscode2session) / `GET /api/auth/me` / `GET|PUT /api/card/me` / `POST /api/card/avatar`(base64≤800KB→data/uploads/) / `GET /uploads/*`(express 静态)
+- env 新增: `WX_APPID` / `WX_APPSECRET`(只存服务器 .env/ecosystem, chmod 600, **不入仓**)
+- ⚠️ **pm2 配置必须叫 `ecosystem.config.cjs`**：本仓 package.json `"type":"module"`，pm2 以 require 加载 .js 配置会报 `module is not defined`(实测坑)。重启: `pm2 startOrReload ecosystem.config.cjs --update-env`
+- ⚠️ **nginx**：`location ^~ /miniapp-api/`(必须 `^~`)——否则图片类 URL 会被同站 `location ~* \.(png|jpg|...)$` 正则静态抢走直接读磁盘 404(实测坑)。头像公网地址 = `https://blog.mgarden.org.cn/miniapp-api/uploads/<file>`
