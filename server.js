@@ -13,7 +13,7 @@ import userApi from './lib/userapi.js';
 const app = express();
 const PORT = Number(process.env.PORT || process.env.MINIAPP_PORT || 3004);
 
-app.use(express.json({ limit: '2mb' }));
+app.use(express.json({ limit: '12mb' })); // 图片 base64 上传(作品图≤5MB→body 可达 ~7MB)
 
 // ─── 访客留言 SMTP 配置(环境变量注入, 密钥不进仓) ───
 const SMTP_USER = process.env.SMTP_USER || '';
