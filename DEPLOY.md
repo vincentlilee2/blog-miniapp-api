@@ -15,16 +15,20 @@
 3. 部署方式选 **Dockerfile**（本目录已带），上传本目录（zip 或本地目录）
 4. 服务配置：端口 **80**（Dockerfile 已 EXPOSE 80）
 
-## 2. 小程序端调用方式（免域名方案）
+## 2. 小程序端调用方式
 
-小程序端 API 调用走 **`wx.cloud.callContainer()`** 云网关通道——不需要 request 合法域名、
-不需要自定义/备案域名，体验版与正式版均可用（个人主体小程序的合规解法）。
+### 2.1 现网方案（公司主体小程序 + 备案域名）
+公司主体小程序有可用备案域名 → 走 **`wx.request`** 同域直连：
+- 前端 `api/request.js`：`wx.request({ url: 'https://blog.mgarden.org.cn/miniapp-api/api/...', header: { Authorization: 'Bearer ...' } })`
+- nginx `^~ /miniapp-api/` 反代到本服务（云托管 80 或本机 PORT）；前缀必须 `^~`，否则会被 `~* \.(png|jpg|...)$` 静态抢走
+- 域名白名单需配 `blog.mgarden.org.cn`；头像/二维码公网地址 = `https://blog.mgarden.org.cn/miniapp-api/uploads/<file>`
+- ⚠️ 备案主体必须与小程序主体一致（个人小程序不能用公司备案域名）
 
-- 前端 `api/request.js`：`wx.cloud.callContainer({ config:{env}, path, header:{'X-WX-SERVICE': 服务名} })`
+### 2.2 历史方案（个人主体小程序，免域名）已弃用
+原个人版走 `wx.cloud.callContainer()` 云网关——不需要备案域名，体验版/正式版均可用：
+- 前端：`wx.cloud.callContainer({ config:{env}, path, header:{'X-WX-SERVICE': 服务名} })`
 - ⚠️ 坑：**必须带 `X-WX-SERVICE` header 指定服务名**，否则报 `-601031 INVALID_PATH`
-- 图片 `<image>` 直接加载网络图不受域名白名单限制；`wx.previewImage` 在体验版实测可用
-- 若日后走正式版公网直连（wx.request + 自定义域名），才需要 request/downloadFile 白名单，
-  且域名备案主体须与小程序主体一致（个人小程序不能用公司备案域名）
+- 公司版已切到 2.1 方案，此方案仅作历史参考
 
 ## 3. 数据包发布通道（博客服务器）
 

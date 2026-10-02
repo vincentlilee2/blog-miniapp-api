@@ -20,4 +20,4 @@
 - `MINIAPP_MEDIA_ORIGIN` — 站内媒体绝对前缀（默认 https://blog.mgarden.org.cn）
 - `PORT` — 监听端口（云托管注入 80；本地默认 3004）
 
-前端：[blog-miniapp-app](https://github.com/vincentlilee2/blog-miniapp-app)（微信小程序，MIT），调用走 wx.cloud.callContainer。
+前端：[blog-miniapp-company](https://github.com/vincentlilee2/blog-miniapp-company)（微信小程序，MIT）。公司主体小程序 + 备案域名 → 走 `wx.request` 直连 `https://blog.mgarden.org.cn/miniapp-api`（nginx `^~ /miniapp-api/` 反代到本服务；原个人版的 `wx.cloud.callContainer` 通道已弃用）。
