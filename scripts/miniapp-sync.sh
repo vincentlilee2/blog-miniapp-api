@@ -8,7 +8,7 @@
 # ─────────────────────────────────────────────────────────────
 set -uo pipefail
 
-MINIAPP_DIR="$HOME/blog-miniapp-api"
+MINIAPP_DIR="$(cd "$(dirname "$0")/.." && pwd)"   # 用脚本位置自动定位(2026-10-02 仓搬到 WeChatProjects/ 后改)
 BLOG_DIR="${BLOG_DIR:-$HOME/MyCenter/Blog}"     # 内容源(export 读 md/site-config)
 CONF="$HOME/MyCenter/deploy-config.json"
 SSH_KEY="$HOME/.ssh/id_ed25519_mgarden"
